@@ -22,3 +22,28 @@ organizationHomepage := Some(url("https://purpledragon.software"))
 homepage := Some(url("https://github.com/stringbean/utils"))
 scmInfo := Some(
   ScmInfo(url("https://github.com/stringbean/utils"), "https://github.com/stringbean/utils.git"))
+
+bintrayPackageLabels := Seq("utils")
+
+releaseCrossBuild := true
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  releaseStepTask(mimaFindBinaryIssues),
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  publishArtifacts,
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)
+
+// no previous version (yet)
+mimaFailOnNoPrevious := false
